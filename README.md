@@ -2,4 +2,4 @@
 
  <https://around.kje.us>
 
-## In construction
+## This project is currently under construction
