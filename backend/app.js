@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware para agregar el usuario a la petición, temporal
 app.use((req, res, next) => {
   req.user = {
-    _id: '67c3a6fbb80569b215292512'
+    _id: req.params._id,
   };
   next();
 });
