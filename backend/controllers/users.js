@@ -29,10 +29,36 @@ const getUser = (req, res) => {
 });
 };
 
+
 const createUser = (req, res) => {
-  User.create(req.body)
-    .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: 'Error del servidor' }));
+  const { name, about, avatar, email, password } = req.body;
+
+  // Asegurarse de que la contraseña sea hasheada
+  bcrypt.hash(password, 10)
+    .then((hashedPassword) => {
+      // Crear el usuario con los datos proporcionados
+      return User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hashedPassword, // Guardar la contraseña hasheada
+      });
+    })
+    .then((user) => {
+      // Evitar devolver la contraseña en la respuesta
+      const { password, ...userWithoutPassword } = user.toObject();
+      res.status(201).send(userWithoutPassword);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err.message });
+      } else if (err.code === 11000) { // Error de duplicados (email único)
+        res.status(409).send({ message: 'El email ya está en uso' });
+      } else {
+        res.status(500).send({ message: 'Error del servidor' });
+      }
+    });
 };
 
 const updateUser = (req, res) => {

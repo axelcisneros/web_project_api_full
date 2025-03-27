@@ -9,7 +9,7 @@
     "no-underscore-dangle": "off",
     "no-param-reassign": "off",
     "no-plusplus": "off",
-    "no-unused-vars": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "no-use-before-define": "off",
     "no-restricted-syntax": "off",
     "no-continue": "off",

@@ -8,40 +8,40 @@ const urlMessage = 'El campo {PATH} debe ser una URL válida.';
 const emailMessage = 'El campo {PATH} debe ser un email válido.';
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, requiredMessage],
-        minlength: [2, minlengthMessage],
-        maxlength: [30, maxlengthMessage]
-    },
-    about: {
-        type: String,
-        required: [true, requiredMessage],
-        minlength: [2, minlengthMessage],
-        maxlength: [30, maxlengthMessage]
-    },
-    avatar: {
-        type: String,
-        required: [true, requiredMessage],
-        validate: {
-            validator: (v) => validator.isURL(v, { protocols: ['http', 'https'], require_protocol: true }),
-            message: urlMessage
-        }
-    },
-    email: {
-        type: String,
-        required: [true, requiredMessage],
-        unique: true,
-        validate: {
-            validator: (v) => validator.isEmail(v),
-            message: emailMessage
-        }
-    },
-    password: {
-        type: String,
-        required: [true, requiredMessage],
-        select: false
-    }
+  name: {
+      type: String,
+      minlength: [2, minlengthMessage],
+      maxlength: [30, maxlengthMessage],
+      default: 'Jacques Cousteau' // Valor predeterminado
+  },
+  about: {
+      type: String,
+      minlength: [2, minlengthMessage],
+      maxlength: [30, maxlengthMessage],
+      default: 'Explorador' // Valor predeterminado
+  },
+  avatar: {
+      type: String,
+      validate: {
+          validator: (v) => validator.isURL(v, { protocols: ['http', 'https'], require_protocol: true }),
+          message: urlMessage
+      },
+      default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg' // Enlace predeterminado
+  },
+  email: {
+      type: String,
+      required: [true, requiredMessage],
+      unique: true,
+      validate: {
+          validator: (v) => validator.isEmail(v),
+          message: emailMessage
+      }
+  },
+  password: {
+      type: String,
+      required: [true, requiredMessage],
+      select: false // Evita exponer la contraseña en las respuestas
+  }
 });
 
 module.exports = mongoose.model('user', userSchema);
