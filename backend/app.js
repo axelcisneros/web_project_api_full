@@ -23,13 +23,15 @@ mongoose.connect('mongodb://127.0.0.1:27017/aroundb', {
   useUnifiedTopology: true
 });
 
+app.use(cors());
+app.options('*', cors());
+
 const errorHandler = (req, res, next) => {
   res.status(404).json({ message: 'Recurso solicitado no encontrado' });
 };
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
-app.options('*', cors());
+
 
 app.get('/crash-test', () => {
   setTimeout(() => {

@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_API_URL || "https://api.around.kje.us";
+export const BASE_URL = import.meta.env.VITE_API_URL;
 
 // La función registrada acepta los datos necesarios como argumentos, 
 // y envía una solicitud POST al endpoint dado.

@@ -60,7 +60,7 @@ class Api {
   }
   
 const api = new Api({
-   baseUrl: import.meta.env.VITE_API_URL || "https://api.around.kje.us",
+   baseUrl: import.meta.env.VITE_API_URL,
    headers: {
      Authorization: `Bearer ${getToken()}`,
    },
