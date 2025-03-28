@@ -5,8 +5,10 @@ const routesCards = require('./routes/cards');
 const bodyParser = require('body-parser');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
+const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { errors } = require('celebrate');
 require('dotenv').config();
 const app = express();
 
@@ -29,13 +31,42 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.options('*', cors());
 
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('El servidor va a caer');
+  }, 0);
+});
+
 app.post('/login' , login);
 app.post('/signup', createUser);
 
+app.use(errors());
+
 app.use('/', auth, routesUsers);
 app.use('/', auth, routesCards);
+
+app.use((req, res, next) => {
+  logger.info({
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    body: req.body,
+  });
+  next();
+});
 // Middleware para rutas no encontradas
 app.use(errorHandler);
+
+app.use((err, req, res, next) => {
+  logger.error({
+    message: err.message,
+    stack: err.stack,
+    status: err.status || 500,
+  });
+
+  res.status(err.status || 500).send({ message: 'Internal Server Error' });
+});
+
 
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}...`);
