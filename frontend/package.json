@@ -1,8 +1,7 @@
 {
-  "name": "web_project_around_react",
+  "name": "web_project_around_api_frontend",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "homepage": "https://axelcisneros.github.io/web_project_around_react/",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
