@@ -214,7 +214,7 @@ function App() {
               <Login handleLogin={handleLogin} />
           </ProtectedRoute>
         } />
-        <Route path="/register" element={
+        <Route path="/signup" element={
           <ProtectedRoute anonymous>
               <Register handleRegistration={handleRegistration} />
           </ProtectedRoute>

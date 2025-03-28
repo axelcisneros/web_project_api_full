@@ -156,7 +156,7 @@ const Login = ({ handleLogin }) => {
       </form>
       <div className="login__signup">
         <p>¿Aún no eres miembro?</p>
-        <Link to="/register" className="login__register-link">
+        <Link to="/signup" className="login__register-link">
           Regístrate aquí
         </Link>
       </div>
