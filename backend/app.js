@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 const app = express();
 
@@ -25,6 +26,8 @@ const errorHandler = (req, res, next) => {
 };
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+app.options('*', cors());
 
 app.post('/login' , login);
 app.post('/signup', createUser);
