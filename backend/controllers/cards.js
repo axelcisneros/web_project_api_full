@@ -64,7 +64,6 @@ const dislikeCard = (req, res) => {
 };
 
 const createCard = (req, res) => {
-  console.log(req.user._id);
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
       .then((card) => res.send(card))
@@ -78,21 +77,41 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-    Card.findByIdAndDelete(req.params.id)
-        .orFail(() => handlerError())
-        .then((card) => {
-            return res.send(card);
-        })
-        .catch((err) => {
-          if (err.name === 'ValidationError') {
-            res.status(400).send({ message: err.message });
-          } else if (err.statusCode === 404) {
-            res.status(404).send({ message: err.message });
-          } else {
-            res.status(500).send({ message: err.message || 'error interno del servidor' });
-          }
-        });
+  const { id } = req.params; // ID de la tarjeta
+  const userId = req.user._id; // ID del usuario desde el token
+
+  // Buscar la tarjeta por su ID
+  Card.findById(id)
+    .orFail(() => {
+      const error = new Error('Tarjeta no encontrada');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then((card) => {
+      // Verificar si el usuario es el propietario de la tarjeta
+      if (card.owner.toString() !== userId) {
+        const error = new Error('No puedes borrar tarjetas de otros usuarios');
+        error.statusCode = 403;
+        throw error;
+      }
+
+      // Si el usuario es el propietario, borrar la tarjeta
+      return Card.findByIdAndDelete(id);
+    })
+    .then((deletedCard) => res.status(200).send(deletedCard))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err.message });
+      } else if (err.statusCode === 404) {
+        res.status(404).send({ message: err.message });
+      } else if (err.statusCode === 403) {
+        res.status(403).send({ message: err.message });
+      } else {
+        res.status(500).send({ message: err.message || 'error interno del servidor' });
+      }
+    });
 };
+
 
 module.exports = {
     getCards,

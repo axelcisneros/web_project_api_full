@@ -64,7 +64,13 @@ const createUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
+  const { name, about } = req.body; // Desestructuramos solo lo que se va a actualizar
+
+  User.findByIdAndUpdate(
+    req.user._id, // ID del usuario autenticado
+    { name, about }, // Solo permitimos actualizar estos campos
+    { new: true, runValidators: true } // Opciones de Mongoose
+  )
     .orFail(() => handlerError())
     .then((user) => {
       res.send(user);
@@ -81,7 +87,13 @@ const updateUser = (req, res) => {
 };
 
 const updateAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar }, { new: true, runValidators: true })
+  const { avatar } = req.body; // Solo permitimos actualizar el avatar
+
+  User.findByIdAndUpdate(
+    req.user._id, // ID del usuario autenticado
+    { avatar }, // Actualizamos solo el avatar
+    { new: true, runValidators: true } // Opciones de Mongoose
+  )
     .orFail(() => handlerError())
     .then((user) => {
       res.send(user);
