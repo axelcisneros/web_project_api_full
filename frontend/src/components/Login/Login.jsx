@@ -101,6 +101,7 @@ const Login = ({ handleLogin }) => {
             name="email"
             type="email"
             placeholder="Correo electrónico"
+            autoComplete="email"
             {...register("email", {
               required: errorMessages.required,
               pattern: {
@@ -124,6 +125,7 @@ const Login = ({ handleLogin }) => {
             name="password"
             type="password"
             placeholder="Contraseña"
+            autoComplete="current-password"
             {...register("password", {
               required: errorMessages.required,
               minLength: {

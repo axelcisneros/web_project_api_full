@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import errorMessages from "@utils/errorMessages";
+import { validateInput, INPUT_USER_NAME_MIN_LENGTH, INPUT_USER_NAME_MAX_LENGTH, INPUT_USER_ABOUT_MAX_LENGTH } from '@utils/validationUtils';
 import Popup from "../Main/components/Popup/Popup";
 import CurrentUserContext from '@contexts/CurrentUserContext.js';
 
@@ -11,13 +12,15 @@ const Register = ({ handleRegistration }) => {
   const { 
     register, 
     handleSubmit, 
-    watch, 
     setError, 
     clearErrors, 
     formState: { errors, isValid }, 
     trigger 
   } = useForm({
     defaultValues: {
+      name: "",
+      about: "",
+      avatar: "",
       email: "",
       password: "",
     },
@@ -34,16 +37,11 @@ const Register = ({ handleRegistration }) => {
     setDisabled(!isValid);
   }, [isValid]);
 
-  const watchedValues = watch();
-
   useEffect(() => {
     const hasErrors = Object.keys(errors).length > 0;
-    const hasEmptyFields = Object.values(watchedValues).some(
-      (value) => value.trim() === ""
-    );
 
-    setDisabled(hasErrors || hasEmptyFields);
-  }, [errors, watchedValues]);
+    setDisabled(hasErrors);
+  }, [errors]);
 
   const handleValidation = (e) => {
     const input = e.target;
@@ -56,9 +54,7 @@ const Register = ({ handleRegistration }) => {
       [input.name]: true,
     }));
 
-    if (!value) {
-      errorMessage = errorMessages.required;
-    } else if (input.type === "email" && !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
+    if (input.type === "email" && !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
       errorMessage = errorMessages.email;
     } else if (
       input.type === "password" &&
@@ -91,6 +87,73 @@ const Register = ({ handleRegistration }) => {
       <form className="register__form" noValidate onSubmit={handleSubmit(onSubmit)}>
         <label className="register__label">
           <input
+            id="name"
+            className={`register__form-input ${errors.name ? "register__form-input_error" : ""}`}
+            name="name"
+            type="text"
+            placeholder="Nombre"
+            {...register("name", {
+              minLength: {
+                value: INPUT_USER_NAME_MIN_LENGTH,
+                message: errorMessages.minLength,
+              },
+              maxLength: {
+                value: INPUT_USER_NAME_MAX_LENGTH,
+                message: errorMessages.maxLength,
+              },
+            })}
+            onInput={handleValidation}
+            onBlur={handleValidation}
+          />
+          {errors.name && (
+            <span className="register__error">{errors.name.message}</span>
+          )}
+        </label>
+
+        <label className="register__label">
+          <input
+            id="about"
+            className={`register__form-input ${errors.about ? "register__form-input_error" : ""}`}
+            name="about"
+            type="text"
+            placeholder="Ocupación"
+            {...register("about", {
+              maxLength: {
+                value: INPUT_USER_ABOUT_MAX_LENGTH,
+                message: errorMessages.maxLength,
+              },
+            })}
+            onInput={handleValidation}
+            onBlur={handleValidation}
+          />
+          {errors.about && (
+            <span className="register__error">{errors.about.message}</span>
+          )}
+        </label>
+
+        <label className="register__label">
+          <input
+            id="avatar"
+            className={`register__form-input ${errors.avatar ? "register__form-input_error" : ""}`}
+            name="avatar"
+            type="url"
+            placeholder="URL de la imagen de perfil"
+            {...register("avatar", {
+              pattern: {
+                value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
+                message: errorMessages.url,
+              },
+            })}
+            onInput={handleValidation}
+            onBlur={handleValidation}
+          />
+          {errors.avatar && (
+            <span className="register__error">{errors.avatar.message}</span>
+          )}
+        </label>
+
+        <label className="register__label">
+          <input
             id="email"
             className={`register__form-input ${
               errors.email && touchedFields.email ? "register__form-input_error" : ""
@@ -98,6 +161,7 @@ const Register = ({ handleRegistration }) => {
             name="email"
             type="email"
             placeholder="Correo electrónico"
+            autoComplete="email"
             {...register("email", {
               required: errorMessages.required,
               pattern: {
@@ -112,6 +176,7 @@ const Register = ({ handleRegistration }) => {
             <span className="register__error">{errors.email.message}</span>
           )}
         </label>
+
         <label className="register__label">
           <input
             id="password"
@@ -121,6 +186,7 @@ const Register = ({ handleRegistration }) => {
             name="password"
             type="password"
             placeholder="Contraseña"
+            autoComplete="current-password"
             {...register("password", {
               required: errorMessages.required,
               minLength: {
@@ -141,6 +207,7 @@ const Register = ({ handleRegistration }) => {
             </span>
           )}
         </label>
+
         <button
           type="submit"
           className={`register__link ${disabled ? "register__link_disabled" : ""}`}
@@ -158,8 +225,8 @@ const Register = ({ handleRegistration }) => {
       {popup && (
         <Popup onClose={handleClosePopup} title={popup.title}>
           {popup.children}
-          </Popup>
-        )}
+        </Popup>
+      )}
     </div>
   );
 };

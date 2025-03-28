@@ -88,9 +88,9 @@ function App() {
     }).catch((error) => console.error(error));
   }
 
-  const handleRegistration = async ({ email, password }) => {
+  const handleRegistration = async ({ name, about, avatar, email, password }) => {
     try {
-      await auth.register(email, password);
+      await auth.register(name, about, avatar, email, password);
       navigate("/login");
       setMessagePopup({message: messages.registerTrue, link: trueImg, linkalt: messages.linkaltTrue});
     } catch (error) {

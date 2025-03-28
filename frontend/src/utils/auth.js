@@ -1,14 +1,14 @@
-export const BASE_URL = "https://se-register-api.en.tripleten-services.com/v1";
+export const BASE_URL = import.meta.env.VITE_API_URL;
 
 // La función registrada acepta los datos necesarios como argumentos, 
 // y envía una solicitud POST al endpoint dado.
-export const register = async (email, password) => {
+export const register = async (name, about, avatar, email, password) => {
   const res = await fetch(`${BASE_URL}/signup`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, about, avatar, email, password }),
     });
     return await (res.ok ? res.json() : Promise.reject(`Error: ${res.status}`));
 };

@@ -1,3 +1,5 @@
+import { getToken } from "./token.js";
+
 class Api {
     constructor(options) {
       this._baseUrl = options.baseUrl;
@@ -58,9 +60,9 @@ class Api {
   }
   
 const api = new Api({
-   baseUrl: "https://around-api.es.tripleten-services.com/v1",
+   baseUrl: import.meta.env.VITE_API_URL,
    headers: {
-     authorization: "8dc55ea1-4d52-4586-8203-01d2d9a48ea4",
+     Authorization: `Bearer ${getToken()}`,
    },
 });
 
