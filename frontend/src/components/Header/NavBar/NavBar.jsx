@@ -28,7 +28,7 @@ function NavBar() {
 
   function handleLogin() {
     if (isLoginPage) {
-      navigate("/register");
+      navigate("/signup");
     } else {
       navigate("/login");
     }
