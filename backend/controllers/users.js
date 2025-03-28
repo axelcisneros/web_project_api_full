@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const handlerError = () => {
   const error = new Error('Usuario no encontrado');
@@ -95,10 +97,46 @@ const updateAvatar = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  // Buscar al usuario por correo electrónico
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        // Usuario no encontrado
+        return res.status(401).send({ message: 'Correo electrónico o contraseña incorrectos' });
+      }
+
+      // Comparar la contraseña proporcionada con la almacenada
+      bcrypt.compare(password, user.password)
+        .then((match) => {
+          if (!match) {
+            // Contraseña incorrecta
+            return res.status(401).send({ message: 'Correo electrónico o contraseña incorrectos' });
+          }
+
+          // Crear el token JWT
+          const token = jwt.sign(
+            { _id: user._id }, // Payload del token
+            process.env.JWT_SECRET,  // Clave secreta para firmar el token
+            { expiresIn: '7d' } // Duración del token: 7 días
+          );
+
+          // Enviar el token al cliente
+          res.send({ token });
+        });
+    })
+    .catch(() => {
+      res.status(500).send({ message: 'Error del servidor' });
+    });
+};
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
   updateAvatar,
+  login,
 };

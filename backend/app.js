@@ -3,7 +3,10 @@ const path = require('path');
 const routesUsers = require('./routes/users');
 const routesCards = require('./routes/cards');
 const bodyParser = require('body-parser');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middleware/auth');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const app = express();
 
 const { PORT = 3000 } = process.env;
@@ -23,15 +26,11 @@ const errorHandler = (req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware para agregar el usuario a la petición, temporal
-app.use((req, res, next) => {
-  req.user = {
-    _id: req.params._id,
-  };
-  next();
-});
-app.use('/', routesUsers);
-app.use('/', routesCards);
+app.post('/login' , login);
+app.post('/signup', createUser);
+
+app.use('/', auth, routesUsers);
+app.use('/', auth, routesCards);
 // Middleware para rutas no encontradas
 app.use(errorHandler);
 
