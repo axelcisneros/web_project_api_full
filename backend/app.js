@@ -30,6 +30,9 @@ const errorHandler = (req, res, next) => {
   res.status(404).json({ message: 'Recurso solicitado no encontrado' });
 };
 
+// Middleware para rutas no encontradas
+app.use(errorHandler);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -56,8 +59,6 @@ app.use((req, res, next) => {
   });
   next();
 });
-// Middleware para rutas no encontradas
-app.use(errorHandler);
 
 app.use((err, req, res, next) => {
   logger.error({
