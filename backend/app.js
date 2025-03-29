@@ -5,7 +5,7 @@ const routesCards = require('./routes/cards');
 const bodyParser = require('body-parser');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
-const logger = require('./utils/logger');
+const { requestLogger, errorLogger } = require('./utils/logger');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { errors } = require('celebrate');
@@ -30,8 +30,7 @@ const errorHandler = (req, res, next) => {
   res.status(404).json({ message: 'Recurso solicitado no encontrado' });
 };
 
-// Middleware para rutas no encontradas
-app.use(errorHandler);
+app.use(requestLogger); // logger de peticiones
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -45,31 +44,15 @@ app.get('/crash-test', () => {
 app.post('/login' , login);
 app.post('/signup', createUser);
 
-app.use(errors());
-
 app.use('/', auth, routesUsers);
 app.use('/', auth, routesCards);
 
-app.use((req, res, next) => {
-  logger.info({
-    method: req.method,
-    url: req.url,
-    headers: req.headers,
-    body: req.body,
-  });
-  next();
-});
+app.use(errorLogger); // logger de errores
 
-app.use((err, req, res, next) => {
-  logger.error({
-    message: err.message,
-    stack: err.stack,
-    status: err.status || 500,
-  });
+app.use(errors); // celebrate errores
 
-  res.status(err.status || 500).send({ message: 'Internal Server Error' });
-});
-
+// Middleware para rutas no encontradas
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}...`);
