@@ -10,6 +10,9 @@
     "preview": "vite preview",
     "deploy": "npm run build && scp -r ./dist/* axel.cisneros25@around.kje.us:/home/axel.cisneros25/web_project_api_full/frontend"
   },
+  "homepage": "around.kje.us",
+  "author": "Axel Cisneros",
+  "license": "ISC",
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

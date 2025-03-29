@@ -8,6 +8,7 @@
     "dev": "nodemon app.js",
     "lint": "npx eslint ."
   },
+  "homepage": "api.around.kje.us",
   "author": "Axel Cisneros",
   "license": "ISC",
   "devDependencies": {
