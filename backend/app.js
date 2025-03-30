@@ -7,7 +7,7 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./utils/logger');
 const mongoose = require('mongoose');
-const allowedOrigins = ["https://around.kje.us/"];
+const allowedOrigins = ["http://around.kje.us", "http://localhost:3000", "https://api.around.kje.us"];
 let cors = require('cors');
 var corsOptions = {
   origin: function (origin, callback) {
