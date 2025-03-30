@@ -63,7 +63,6 @@ const api = new Api({
    baseUrl: 'https://api.around.kje.us',
    headers: {
      Authorization: `Bearer ${getToken()}`,
-     origin: "Access-Control-Allow-Origin",
    },
 });
 

@@ -7,7 +7,7 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./utils/logger');
 const mongoose = require('mongoose');
-const cors = require('cors');
+let cors = require('cors');
 const { errors } = require('celebrate');
 require('dotenv').config();
 const app = express();
@@ -17,14 +17,14 @@ const { PORT = 3000 } = process.env;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cors());
+app.options('*', cors());
+
 //Se conecta a la base de datos de mongodb en el puerto 27017 y la base de datos se llama aroundb
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
-
-app.use(cors());
-app.options('*', cors());
 
 const errorHandler = (req, res, next) => {
   res.status(404).json({ message: 'Recurso solicitado no encontrado' });

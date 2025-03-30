@@ -7,7 +7,6 @@ export const register = async (name, about, avatar, email, password) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "origin": "Access-Control-Allow-Origin",
         },
         body: JSON.stringify({ name, about, avatar, email, password }),
     });
@@ -19,7 +18,6 @@ export const authorize = async (email, password) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "origin": "Access-Control-Allow-Origin",
         },
         body: JSON.stringify({ email, password }),
     });
@@ -33,7 +31,6 @@ export const getUserInfoAuth = async (token) => {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "origin": "Access-Control-Allow-Origin",
             "Authorization": `Bearer ${token}`,
         },
     });
