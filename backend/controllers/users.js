@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = process.env;
 
 const handlerError = () => {
   const error = new Error('Usuario no encontrado');
@@ -131,7 +131,7 @@ const login = (req, res) => {
           // Crear el token JWT
           const token = jwt.sign(
             { _id: user._id }, // Payload del token
-            NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',  // Clave secreta para firmar el token
+            JWT_SECRET,  // Clave secreta para firmar el token
             { expiresIn: '7d' } // Duración del token: 7 días
           );
 
