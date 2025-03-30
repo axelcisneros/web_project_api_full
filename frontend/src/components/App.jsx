@@ -49,6 +49,7 @@ function App() {
       const { data } = await auth.getUserInfoAuth(jwt);
       setMessagePopup({message: messages.registerTrue, link: trueImg, linkalt: messages.linkaltTrue});
       setUserData({ email: data.email });
+      setCurrentUser(data);
       setIsLoggedIn(true);
       } catch (error) {
         setMessagePopup({message: messages.registerFalse, link: falseImg, linkalt: messages.linkaltFalse});
@@ -56,14 +57,14 @@ function App() {
       }
     };
 
-    const getUserData = async () => {
+/*     const getUserData = async () => {
       try {
         const data = await api.getUserInfo();
         setCurrentUser(data);
       } catch (error) {
         console.error(error);
       }
-    };
+    }; */
   
     const getInitialCardsData = async () => {
       try {
@@ -75,7 +76,7 @@ function App() {
     };
 
     getUserInfoAuth();
-    getUserData();
+    /* getUserData(); */
     getInitialCardsData();
     
   }, []);  

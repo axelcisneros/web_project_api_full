@@ -25,9 +25,9 @@ class Api {
     async getInitialCards() {
       return this._makeRequest("/cards");
     }
-    async getUserInfo() {
+/*     async getUserInfo() {
       return this._makeRequest("/users/me");
-    }
+    } */
     async setUserInfo(name, about) {
       return this._makeRequest("/users/me", "PATCH", { name, about });
     }
