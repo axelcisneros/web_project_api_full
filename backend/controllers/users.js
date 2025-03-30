@@ -1,136 +1,105 @@
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = process.env;
-
-const handlerError = () => {
-  const error = new Error('Usuario no encontrado');
-  error.statusCode = 404;
-throw error;
-};
-
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Error del servidor' }));
+    .catch(next); // Propaga el error al middleware de manejo de errores
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.params.id)
-  .orFail(() => handlerError())
-    .then((user) => {
-      res.status(200).send(user);
+    .orFail(() => {
+      const error = new Error('Usuario no encontrado');
+      error.statusCode = 404;
+      throw error; // Lanza el error para que sea capturado
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: err.message || 'error interno del servidor' });
-      }
-});
+    .then((user) => res.status(200).send(user))
+    .catch(next); // Propaga el error al middleware de manejo de errores
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
-  // Asegurarse de que la contraseña sea hasheada
   bcrypt.hash(password, 10)
     .then((hashedPassword) => {
-      // Crear el usuario con los datos proporcionados
       return User.create({
         name,
         about,
         avatar,
         email,
-        password: hashedPassword, // Guardar la contraseña hasheada
+        password: hashedPassword,
       });
     })
     .then((user) => {
-      // Evitar devolver la contraseña en la respuesta
       const { password, ...userWithoutPassword } = user.toObject();
       res.status(201).send(userWithoutPassword);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else if (err.code === 11000) { // Error de duplicados (email único)
-        res.status(409).send({ message: 'El email ya está en uso' });
-      } else {
-        res.status(500).send({ message: 'Error del servidor' });
+        err.statusCode = 400;
+      } else if (err.code === 11000) {
+        err.statusCode = 409;
+        err.message = 'El email ya está en uso';
       }
+      next(err); // Propaga el error al middleware de manejo de errores
     });
 };
 
-const updateUser = (req, res) => {
-  const { name, about } = req.body; // Desestructuramos solo lo que se va a actualizar
+const updateUser = (req, res, next) => {
+  const { name, about } = req.body;
 
   User.findByIdAndUpdate(
-    req.user._id, // ID del usuario autenticado
-    { name, about }, // Solo permitimos actualizar estos campos
-    { new: true, runValidators: true } // Opciones de Mongoose
+    req.user._id,
+    { name, about },
+    { new: true, runValidators: true }
   )
-    .orFail(() => handlerError())
-    .then((user) => {
-      res.send(user);
+    .orFail(() => {
+      const error = new Error('Usuario no encontrado');
+      error.statusCode = 404;
+      throw error;
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: err.message || 'error interno del servidor' });
-      }
-    });
+    .then((user) => res.send(user))
+    .catch(next); // Propaga el error al middleware de manejo de errores
 };
 
-const updateAvatar = (req, res) => {
-  const { avatar } = req.body; // Solo permitimos actualizar el avatar
+const updateAvatar = (req, res, next) => {
+  const { avatar } = req.body;
 
   User.findByIdAndUpdate(
-    req.user._id, // ID del usuario autenticado
-    { avatar }, // Actualizamos solo el avatar
-    { new: true, runValidators: true } // Opciones de Mongoose
+    req.user._id,
+    { avatar },
+    { new: true, runValidators: true }
   )
-    .orFail(() => handlerError())
-    .then((user) => {
-      res.send(user);
+    .orFail(() => {
+      const error = new Error('Usuario no encontrado');
+      error.statusCode = 404;
+      throw error;
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: err.message || 'error interno del servidor' });
-      }
-    });
+    .then((user) => res.send(user))
+    .catch(next); // Propaga el error al middleware de manejo de errores
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findOne({ email })
     .then((user) => {
       if (!user) {
-        return res.status(401).send({ message: 'Correo electrónico o contraseña incorrectos' });
+        const error = new Error('Correo electrónico o contraseña incorrectos');
+        error.statusCode = 401;
+        throw error;
       }
 
-      bcrypt.compare(password, user.password)
-        .then((match) => {
-          if (!match) {
-            return res.status(401).send({ message: 'Correo electrónico o contraseña incorrectos' });
-          }
+      return bcrypt.compare(password, user.password).then((match) => {
+        if (!match) {
+          const error = new Error('Correo electrónico o contraseña incorrectos');
+          error.statusCode = 401;
+          throw error;
+        }
 
-          const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-          res.send({ token });
-        });
+        const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+        res.send({ token });
+      });
     })
-    .catch(() => {
-      res.status(500).send({ message: 'Error del servidor' });
-    });
+    .catch(next); // Propaga el error al middleware de manejo de errores
 };
 
 module.exports = {

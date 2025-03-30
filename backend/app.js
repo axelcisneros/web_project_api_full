@@ -38,10 +38,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/aroundb', {
   useUnifiedTopology: true
 });
 
-const errorHandler = (req, res, next) => {
-  res.status(404).json({ message: 'Recurso solicitado no encontrado' });
-};
-
 app.use(cors(
   {
     origin: corsOptions,
@@ -67,10 +63,22 @@ app.use('/', auth, routesCards);
 
 app.use(errorLogger); // logger de errores
 
-app.use(errors); // celebrate errores
+app.use(errors()); // Manejo de errores de Celebrate
 
 // Middleware para rutas no encontradas
-app.use(errorHandler);
+app.use((req, res, next) => {
+  const error = new Error('Recurso solicitado no encontrado');
+  error.statusCode = 404;
+  next(error); // Propaga el error al middleware de manejo de errores
+});
+
+// Middleware genérico para manejo de errores
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).json({
+    message: statusCode === 500 ? 'Error interno del servidor' : message,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}...`);
