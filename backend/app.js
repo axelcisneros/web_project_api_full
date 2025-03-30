@@ -17,9 +17,6 @@ const { PORT = 3000 } = process.env;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
-app.options('*', cors());
-
 //Se conecta a la base de datos de mongodb en el puerto 27017 y la base de datos se llama aroundb
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb', {
   useNewUrlParser: true,
@@ -29,6 +26,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/aroundb', {
 const errorHandler = (req, res, next) => {
   res.status(404).json({ message: 'Recurso solicitado no encontrado' });
 };
+
+app.use(cors());
+app.options('*', cors());
 
 app.use(requestLogger); // logger de peticiones
 

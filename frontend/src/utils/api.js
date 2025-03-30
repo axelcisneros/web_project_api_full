@@ -62,7 +62,7 @@ class Api {
 const api = new Api({
    baseUrl: 'https://api.around.kje.us',
    headers: {
-     Authorization: `Bearer ${getToken()}`,
+     authorization: `Bearer ${getToken()}`,
    },
 });
 

@@ -31,7 +31,7 @@ export const getUserInfoAuth = async (token) => {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            "authorization": `Bearer ${token}`,
         },
     });
     return await (res.ok ? res.json() : Promise.reject(`Error: ${res.status}`));
