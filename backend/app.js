@@ -7,7 +7,22 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./utils/logger');
 const mongoose = require('mongoose');
+const allowedOrigins = ["https://around.kje.us/"];
 let cors = require('cors');
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      var msg =
+        "The CORS policy for this site does not " +
+        "allow access from the specified Origin.";
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}
+
 const { errors } = require('celebrate');
 require('dotenv').config();
 const app = express();
@@ -27,13 +42,16 @@ const errorHandler = (req, res, next) => {
   res.status(404).json({ message: 'Recurso solicitado no encontrado' });
 };
 
-app.use(cors());
-app.options('*', cors());
+app.use(cors(
+  {
+    origin: corsOptions,
+    credentials: true
+  }
+));
 
 app.use(requestLogger); // logger de peticiones
 
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -55,5 +73,5 @@ app.use(errors); // celebrate errores
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}...`);
+  console.log(`App listening on port ${PORT}...`);
 });
