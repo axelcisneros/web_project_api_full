@@ -58,16 +58,8 @@ function App() {
 
     const getUserData = async () => {
       try {
-        const data = await api.getUserInfo();
+        const data = await api.getUserInfoAndCards();
         setCurrentUser(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    const getInitialCardsData = async () => {
-      try {
-        const cards = await api.getInitialCards();
         setCards(cards);
       } catch (error) {
         console.error(error);
@@ -76,7 +68,6 @@ function App() {
 
     getUserInfoAuth();
     getUserData();
-    getInitialCardsData();
     
   }, []);  
 
@@ -107,6 +98,7 @@ function App() {
     try {
       const data = await auth.authorize(email, password);
       if (data.token) {
+        console.log(data.token);
         setToken(data.token);
         setIsLoggedIn(true);
         setUserData({ email });
