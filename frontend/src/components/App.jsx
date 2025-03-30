@@ -97,8 +97,8 @@ function App() {
 
     try {
       const data = await auth.authorize(email, password);
+      console.log(data);
       if (data.token) {
-        console.log(data.token);
         setToken(data.token);
         setIsLoggedIn(true);
         setUserData({ email });

@@ -86,6 +86,7 @@ const Login = ({ handleLogin }) => {
   const onSubmit = (data) => {
     handleMessagePopup();
     handleLogin(data); // Procesar inicio de sesión
+    console.log("Datos enviados:", data);
   };
 
   return (

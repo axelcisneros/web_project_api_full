@@ -27,7 +27,7 @@ export const authorize = async (email, password) => {
 // getContent acepta al token como argumento.
 export const getUserInfoAuth = async (token) => {
   // Envía una solicitud GET a /users/me
-  const res = await fetch(`${BASE_URL}/users/:id`, {
+  const res = await fetch(`${BASE_URL}/users/me`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const routesUsers = require('./routes/users');
 const routesCards = require('./routes/cards');
-const bodyParser = require('body-parser');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./utils/logger');
@@ -29,8 +28,7 @@ const app = express();
 
 const { PORT = 3000 } = process.env;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 //Se conecta a la base de datos de mongodb en el puerto 27017 y la base de datos se llama aroundb
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb', {

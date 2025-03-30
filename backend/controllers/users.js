@@ -110,6 +110,7 @@ const updateAvatar = (req, res) => {
 };
 
 const login = (req, res) => {
+  console.log(req.body);
   const { email, password } = req.body;
 
   // Buscar al usuario por correo electrónico
