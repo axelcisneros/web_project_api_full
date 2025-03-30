@@ -1,4 +1,5 @@
 export const BASE_URL = 'https://api.around.kje.us';
+export const origin = 'https://around.kje.us';
 
 // La función registrada acepta los datos necesarios como argumentos, 
 // y envía una solicitud POST al endpoint dado.
@@ -7,6 +8,7 @@ export const register = async (name, about, avatar, email, password) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "origin": `${origin}`,
         },
         body: JSON.stringify({ name, about, avatar, email, password }),
     });
@@ -18,6 +20,7 @@ export const authorize = async (email, password) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "origin": `${origin}`,
         },
         body: JSON.stringify({ email, password }),
     });
@@ -31,6 +34,7 @@ export const getUserInfoAuth = async (token) => {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
+            "origin": `${origin}`,
             "Authorization": `Bearer ${token}`,
         },
     });
