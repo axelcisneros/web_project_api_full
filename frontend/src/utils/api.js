@@ -46,7 +46,7 @@ class Api {
     async updateAvatar(data) {
       return this._makeRequest("/users/me/avatar", "PATCH", data);
     }
-    async getUserInfoAndCards() {
+/*     async getUserInfoAndCards() {
       try {
         const [userInfo, cards] = await Promise.all([
           this.getUserInfo(),
@@ -56,7 +56,7 @@ class Api {
       } catch (error) {
         return await Promise.reject(error);
       }
-    }
+    } */
   }
   
 const api = new Api({
