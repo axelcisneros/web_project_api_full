@@ -15,14 +15,14 @@ export const register = async (name, about, avatar, email, password) => {
 
 export const authorize = async (email, password) => {
     const res = await fetch(`${BASE_URL}/login`, {
-                method: "POST",
-                headers: {
-                        "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-        });
-        return await (res.ok ? res.json() : Promise.reject(`Error: ${res.status}`));
-}
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+    });
+    return await (res.ok ? res.json() : Promise.reject(`Error: ${res.status}`));
+};
 
 // getContent acepta al token como argumento.
 export const getUserInfoAuth = async (token) => {
