@@ -1,5 +1,7 @@
 import { getToken } from "./token.js";
 
+const token = getToken();
+
 class Api {
     constructor(options) {
       this._baseUrl = options.baseUrl;
@@ -62,7 +64,7 @@ class Api {
 const api = new Api({
    baseUrl: 'https://api.around.kje.us',
    headers: {
-     authorization: `Bearer ${getToken()}`,
+     authorization: `Bearer ${token}`,
    },
 });
 

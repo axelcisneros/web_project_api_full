@@ -59,7 +59,7 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.get('/login' , login);
+app.post('/login' , login);
 app.post('/signup', createUser);
 
 app.use('/', auth, routesUsers);

@@ -15,7 +15,7 @@ export const register = async (name, about, avatar, email, password) => {
 
 export const authorize = async (email, password) => {
   const res = await fetch(`${BASE_URL}/login`, {
-        method: "GET",
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
@@ -27,7 +27,7 @@ export const authorize = async (email, password) => {
 // getContent acepta al token como argumento.
 export const getUserInfoAuth = async (token) => {
   // Envía una solicitud GET a /users/me
-  const res = await fetch(`${BASE_URL}/users/me`, {
+  const res = await fetch(`${BASE_URL}/users/:id`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
