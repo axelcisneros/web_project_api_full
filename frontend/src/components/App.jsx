@@ -97,7 +97,6 @@ function App() {
 
     try {
       const data = await auth.authorize(email, password);
-      console.log(data);
       if (data.token) {
         setToken(data.token);
         setIsLoggedIn(true);
