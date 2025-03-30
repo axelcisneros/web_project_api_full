@@ -15,7 +15,7 @@ export const register = async (name, about, avatar, email, password) => {
 
 export const authorize = async (email, password) => {
   const res = await fetch(`${BASE_URL}/login`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
         },
