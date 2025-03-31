@@ -31,22 +31,22 @@ class Api {
       return this._makeRequest("users/me"); // Ruta correcta para obtener el usuario actual
     }
     async setUserInfo(name, about) {
-      return this._makeRequest("/users/me", "PATCH", { name, about });
+      return this._makeRequest("users/me", "PATCH", { name, about });
     }
     async addCard(data) {
-      return this._makeRequest("/cards", "POST", data);
+      return this._makeRequest("cards", "POST", data);
     }
     async removeCard(cardId) {
-      return this._makeRequest(`/cards/${cardId}`, "DELETE");
+      return this._makeRequest(`cards/${cardId}`, "DELETE");
     }
     async changeLikeCardStatus(cardId, isLiked) {
       return isLiked ? 
-      this._makeRequest(`/cards/${cardId}/likes`, "PUT") 
+      this._makeRequest(`cards/${cardId}/likes`, "PUT") 
       : 
-      this._makeRequest(`/cards/${cardId}/likes`, "DELETE");
+      this._makeRequest(`cards/${cardId}/likes`, "DELETE");
     }
     async updateAvatar(data) {
-      return this._makeRequest("/users/me/avatar", "PATCH", data);
+      return this._makeRequest("users/me/avatar", "PATCH", data);
     }
     async getUserInfoAndCards() {
       try {
