@@ -18,6 +18,7 @@ export default function ProtectedRoute({
   const from = location.state?.from || "/";
 
   const { isLoggedIn } = useContext(CurrentUserContext);
+  console.log(isLoggedIn);
   
   // Si el usuario ha iniciado la sesión le redirigimos fuera de nuestras
   // rutas anónimas.
