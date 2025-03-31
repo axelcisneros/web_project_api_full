@@ -46,12 +46,16 @@ function App() {
       }
       
       try {
-        const { data } = await auth.getUserInfoAuth(jwt);
-        setUserData({ email: data.email });
-        setIsLoggedIn(true);
+        const response = await auth.getUserInfoAuth(jwt);
+        const email = response?.data?.email || response?.email; // Ajuste para manejar diferentes estructuras
+        if (email) {
+          setUserData({ email });
+          setIsLoggedIn(true);
+        } else {
+          console.error("No se encontró la propiedad 'email' en la respuesta.");
+        }
       } catch (error) {
         console.error(error);
-        removeToken(); // Elimina el token inválido
       }
     };
 

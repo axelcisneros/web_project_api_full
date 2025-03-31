@@ -34,5 +34,9 @@ export const getUserInfoAuth = async (token) => {
             "authorization": `Bearer ${token}`,
         },
     });
-    return await (res.ok ? res.json() : Promise.reject(`Error: ${res.status}`));
-}
+    if (!res.ok) {
+        return Promise.reject(`Error: ${res.status}`);
+    }
+    const data = await res.json();
+    return data; // Asegúrate de devolver el objeto completo
+};
