@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import errorMessages from "@utils/errorMessages";
-import { validateInput, INPUT_USER_NAME_MIN_LENGTH, INPUT_USER_NAME_MAX_LENGTH, INPUT_USER_ABOUT_MAX_LENGTH } from '@utils/validationUtils';
 import Popup from "../Main/components/Popup/Popup";
 import CurrentUserContext from '@contexts/CurrentUserContext.js';
 
@@ -18,11 +17,11 @@ const Register = ({ handleRegistration }) => {
     trigger 
   } = useForm({
     defaultValues: {
+      email: "",
+      password: "",
       name: "",
       about: "",
       avatar: "",
-      email: "",
-      password: "",
     },
     mode: "onChange",
   });
@@ -64,6 +63,12 @@ const Register = ({ handleRegistration }) => {
         value.length < 6
           ? errorMessages.minLengthPassword
           : errorMessages.maxLengthPassword;
+    } else if (input.name === "name" && value !== "" && value.length < 2) {
+      errorMessage = errorMessages.minLength;
+    } else if (input.name === "about" && value !== "" && value.length < 2) {
+      errorMessage = errorMessages.minLength;
+    } else if (input.name === "avatar" && value !== "" && !/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(value)) {
+      errorMessage = errorMessages.url;
     }
 
     if (errorMessage) {
@@ -85,73 +90,6 @@ const Register = ({ handleRegistration }) => {
     <div className="register">
       <p className="register__welcome">Regístrate</p>
       <form className="register__form" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <label className="register__label">
-          <input
-            id="name"
-            className={`register__form-input ${errors.name ? "register__form-input_error" : ""}`}
-            name="name"
-            type="text"
-            placeholder="Nombre"
-            {...register("name", {
-              minLength: {
-                value: INPUT_USER_NAME_MIN_LENGTH,
-                message: errorMessages.minLength,
-              },
-              maxLength: {
-                value: INPUT_USER_NAME_MAX_LENGTH,
-                message: errorMessages.maxLength,
-              },
-            })}
-            onInput={handleValidation}
-            onBlur={handleValidation}
-          />
-          {errors.name && (
-            <span className="register__error">{errors.name.message}</span>
-          )}
-        </label>
-
-        <label className="register__label">
-          <input
-            id="about"
-            className={`register__form-input ${errors.about ? "register__form-input_error" : ""}`}
-            name="about"
-            type="text"
-            placeholder="Ocupación"
-            {...register("about", {
-              maxLength: {
-                value: INPUT_USER_ABOUT_MAX_LENGTH,
-                message: errorMessages.maxLength,
-              },
-            })}
-            onInput={handleValidation}
-            onBlur={handleValidation}
-          />
-          {errors.about && (
-            <span className="register__error">{errors.about.message}</span>
-          )}
-        </label>
-
-        <label className="register__label">
-          <input
-            id="avatar"
-            className={`register__form-input ${errors.avatar ? "register__form-input_error" : ""}`}
-            name="avatar"
-            type="url"
-            placeholder="URL de la imagen de perfil"
-            {...register("avatar", {
-              pattern: {
-                value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
-                message: errorMessages.url,
-              },
-            })}
-            onInput={handleValidation}
-            onBlur={handleValidation}
-          />
-          {errors.avatar && (
-            <span className="register__error">{errors.avatar.message}</span>
-          )}
-        </label>
-
         <label className="register__label">
           <input
             id="email"
@@ -206,6 +144,54 @@ const Register = ({ handleRegistration }) => {
               {errors.password.message}
             </span>
           )}
+        </label>
+
+        <label className="register__label">
+          <input
+            id="name"
+            className={`register__form-input ${errors.name ? "register__form-input_error" : ""}`}
+            name="name"
+            type="text"
+            placeholder="Nombre"
+            {...register("name", {
+              validate: (value) => value === "" || value.length >= 2 || errorMessages.minLength,
+            })}
+            onInput={handleValidation}
+            onBlur={handleValidation}
+          />
+          {errors.name && <span className="register__error">{errors.name.message}</span>}
+        </label>
+
+        <label className="register__label">
+          <input
+            id="about"
+            className={`register__form-input ${errors.about ? "register__form-input_error" : ""}`}
+            name="about"
+            type="text"
+            placeholder="Ocupación"
+            {...register("about", {
+              validate: (value) => value === "" || value.length >= 2 || errorMessages.minLength,
+            })}
+            onInput={handleValidation}
+            onBlur={handleValidation}
+          />
+          {errors.about && <span className="register__error">{errors.about.message}</span>}
+        </label>
+
+        <label className="register__label">
+          <input
+            id="avatar"
+            className={`register__form-input ${errors.avatar ? "register__form-input_error" : ""}`}
+            name="avatar"
+            type="url"
+            placeholder="URL de la imagen de perfil"
+            {...register("avatar", {
+              validate: (value) => value === "" || /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(value) || errorMessages.url,
+            })}
+            onInput={handleValidation}
+            onBlur={handleValidation}
+          />
+          {errors.avatar && <span className="register__error">{errors.avatar.message}</span>}
         </label>
 
         <button
