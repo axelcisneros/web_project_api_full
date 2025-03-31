@@ -93,7 +93,7 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }).select('+password'); // Incluye el campo password
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
       const error = new Error('Correo electrónico o contraseña incorrectos');
       error.statusCode = 401;
@@ -107,10 +107,14 @@ const login = async (req, res, next) => {
       throw error;
     }
 
-    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+    const token = jwt.sign(
+      { _id: user._id },
+      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      { expiresIn: '7d' } // Expira en 7 días
+    );
     res.send({ token });
   } catch (err) {
-    next(err); // Propaga el error al middleware de manejo de errores
+    next(err);
   }
 };
 

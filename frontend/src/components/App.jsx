@@ -9,7 +9,7 @@ import Register from './Register/Register.jsx';
 import InfoTooltip from "./InfoTooltip/InfoTooltip";
 import api from '@utils/api.js';
 import * as auth from '@utils/auth.js';
-import { setToken, getToken } from '@utils/token.js';
+import { setToken, getToken, removeToken } from '@utils/token.js';
 import CurrentUserContext from '@contexts/CurrentUserContext.js';
 import trueImg from '@assets/images/trueImg.svg';
 import falseImg from '@assets/images/falseImg.svg'; 
@@ -42,17 +42,18 @@ function App() {
     const getUserInfoAuth = async () => {
       const jwt = getToken();
       if (!jwt) {
-      return;
+        return;
       }
       
       try {
-      const { data } = await auth.getUserInfoAuth(jwt);
-      setMessagePopup({message: messages.registerTrue, link: trueImg, linkalt: messages.linkaltTrue});
-      setUserData({ email: data.email });
-      setIsLoggedIn(true);
+        const { data } = await auth.getUserInfoAuth(jwt);
+        setMessagePopup({ message: messages.registerTrue, link: trueImg, linkalt: messages.linkaltTrue });
+        setUserData({ email: data.email });
+        setIsLoggedIn(true);
       } catch (error) {
-        setMessagePopup({message: messages.registerFalse, link: falseImg, linkalt: messages.linkaltFalse});
+        setMessagePopup({ message: messages.registerFalse, link: falseImg, linkalt: messages.linkaltFalse });
         console.error(error);
+        removeToken(); // Elimina el token inválido
       }
     };
 
