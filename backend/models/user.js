@@ -39,8 +39,8 @@ const userSchema = new mongoose.Schema({
   },
   password: {
       type: String,
-      required: [true, requiredMessage],
-      select: false // Evita exponer la contraseña en las respuestas
+      required: true,
+      select: false // No incluir por defecto en las consultas
   }
 });
 

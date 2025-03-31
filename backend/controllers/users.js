@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = async (req, res, next) => {
   try {
@@ -30,6 +30,7 @@ const createUser = async (req, res, next) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword);
     const user = await User.create({
       name,
       about,
@@ -92,7 +93,7 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password'); // Incluye el campo password
     if (!user) {
       const error = new Error('Correo electrónico o contraseña incorrectos');
       error.statusCode = 401;
@@ -106,7 +107,7 @@ const login = async (req, res, next) => {
       throw error;
     }
 
-    const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
     res.send({ token });
   } catch (err) {
     next(err); // Propaga el error al middleware de manejo de errores
