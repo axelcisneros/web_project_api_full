@@ -13,7 +13,7 @@ const getCards = (req, res) => {
 };
 
 const getCard = (req, res) => {
-  Card.findById(req.params.id)
+  Card.findById(req.params._id)
       .orFail(() => handlerError())
       .then((card) => {
           res.send(card);
