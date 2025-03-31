@@ -58,8 +58,15 @@ function App() {
 
     const getUserData = async () => {
       try {
-        const data = await api.getUserInfoAndCards();
+        const data = await api.getUserInfo();
         setCurrentUser(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const getInitialCardsData = async () => {
+      try {
+        const cards = await api.getInitialCards();
         setCards(cards);
       } catch (error) {
         console.error(error);
@@ -68,6 +75,7 @@ function App() {
 
     getUserInfoAuth();
     getUserData();
+    getInitialCardsData();
     
   }, []);  
 
