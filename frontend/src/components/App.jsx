@@ -47,11 +47,9 @@ function App() {
       
       try {
         const { data } = await auth.getUserInfoAuth(jwt);
-        setMessagePopup({ message: messages.registerTrue, link: trueImg, linkalt: messages.linkaltTrue });
         setUserData({ email: data.email });
         setIsLoggedIn(true);
       } catch (error) {
-        setMessagePopup({ message: messages.registerFalse, link: falseImg, linkalt: messages.linkaltFalse });
         console.error(error);
         removeToken(); // Elimina el token inválido
       }
@@ -59,15 +57,16 @@ function App() {
 
     const getUserData = async () => {
       try {
-        const data = await api.getUserInfo();
+        const data = await api.getUserInfo(); // Solicitud a /users/me
         setCurrentUser(data);
       } catch (error) {
         console.error(error);
       }
     };
+
     const getInitialCardsData = async () => {
       try {
-        const cards = await api.getInitialCards();
+        const cards = await api.getInitialCards(); // Solicitud a /cards
         setCards(cards);
       } catch (error) {
         console.error(error);

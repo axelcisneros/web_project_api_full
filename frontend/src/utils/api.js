@@ -25,10 +25,10 @@ class Api {
       }
     }
     async getInitialCards() {
-      return this._makeRequest("/cards");
+      return this._makeRequest("cards"); // Ruta correcta para obtener las tarjetas
     }
     async getUserInfo() {
-      return this._makeRequest("/users/me");
+      return this._makeRequest("users/me"); // Ruta correcta para obtener el usuario actual
     }
     async setUserInfo(name, about) {
       return this._makeRequest("/users/me", "PATCH", { name, about });
